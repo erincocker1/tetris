@@ -62,7 +62,7 @@ public class TetrisGame extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         tetromino.calculateActualCoordinates();
-        if (tetromino.hasLanded()) {
+        if (tetromino.hasLanded(board)) {
             board.addFallenTetromino(tetromino);
             board.checkForFullLine();//not done yet
             tetromino = new Tetromino();

@@ -59,9 +59,10 @@ public class Tetromino {
         rotation = 0;
     }
 
-    public boolean hasLanded() {
+    public boolean hasLanded(Board board) {
         for (int i = 0; i < 4; i++) {
-            if (actualCoordinates[i][1] >= 19) {
+            if (actualCoordinates[i][1] >= 19 ||
+                    board.grid[actualCoordinates[i][0]][1+actualCoordinates[i][1]] != TileType.BLANK ) {
                 return true;
             }
         }
