@@ -8,25 +8,25 @@ import java.util.Random;
 //should have origin coordinates, and tile coordinates are relative to that.
 //should randomly create one tetromino when initialised
 enum TetrominoType {
-    //I(Color.white,4),
-    //L(Color.red,3),
-    //J(Color.blue,3),
-    //S(Color.magenta,3),
-    //Z(Color.yellow,3),
-    //T(Color.pink,3),
-    O(Color.cyan, 2, new HashMap<>(Map.of(
+    //I(Color.white,3),
+    //L(Color.red,4),
+    //J(Color.blue,4),
+    //S(Color.magenta,4),
+    //Z(Color.yellow,4),
+    //T(Color.pink,4),
+    O(Color.cyan, 4, new HashMap<>(Map.of(
             0, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             1, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             2, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             3, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}})));
 
     private final Color color;
-    private final int drawAreaSize;
+    private final int initialXCoordinate;
     private final HashMap<Integer, int[][]> coordsByRotation;
 
-    TetrominoType(Color color, int drawAreaSize, HashMap<Integer, int[][]> coordsByRotation) {
+    TetrominoType(Color color, int initialXCoordinate, HashMap<Integer, int[][]> coordsByRotation) {
         this.color = color;
-        this.drawAreaSize = drawAreaSize;
+        this.initialXCoordinate = initialXCoordinate;
         this.coordsByRotation = coordsByRotation;
     }
 
@@ -34,8 +34,8 @@ enum TetrominoType {
         return coordsByRotation;
     }
 
-    public int getDrawAreaSize() {
-        return drawAreaSize;
+    public int getInitialXCoordinate() {
+        return initialXCoordinate;
     }
 
     public Color getColor() {
@@ -55,7 +55,7 @@ public class Tetromino {
     Tetromino() {
         Random random = new Random();
         tetrominoType = TetrominoType.O; //later make this random
-        origin = new int[]{random.nextInt(11 - tetrominoType.getDrawAreaSize()), 0};
+        origin = new int[]{tetrominoType.getInitialXCoordinate(), 0};
         rotation = 0;
     }
 
