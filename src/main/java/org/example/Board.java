@@ -9,6 +9,7 @@ public class Board {
                 grid[i][j] = TileType.BLANK;
             }
         }
+        grid[0][5] = TileType.O;
     }
 
     public void addFallenTetromino(Tetromino tetromino) {

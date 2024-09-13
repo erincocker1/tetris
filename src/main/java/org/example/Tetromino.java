@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import static java.lang.Math.max;
+
 //should have origin coordinates, and tile coordinates are relative to that.
 //should randomly create one tetromino when initialised
 enum TetrominoType {
@@ -24,10 +26,10 @@ enum TetrominoType {
     private final int initialXCoordinate;
     private final HashMap<Integer, int[][]> coordsByRotation;
 
-    TetrominoType(Color color, int initialXCoordinate, HashMap<Integer, int[][]> coordsByRotation) {
+    TetrominoType(Color color, int initialXCoordinate, HashMap<Integer, int[][]> relativeCoordinates) {
         this.color = color;
         this.initialXCoordinate = initialXCoordinate;
-        this.coordsByRotation = coordsByRotation;
+        this.coordsByRotation = relativeCoordinates;
     }
 
     public HashMap<Integer, int[][]> getCoordsByRotation() {
@@ -49,7 +51,8 @@ public class Tetromino {
     int rotation;
 
     TetrominoType tetrominoType;
-    public int[][] actualCoordinates = new int[4][2];;
+    public int[][] actualCoordinates = new int[4][2];
+    ;
 
     //currently only O piece
     Tetromino() {
@@ -62,13 +65,12 @@ public class Tetromino {
     public boolean hasLanded(Board board) {
         for (int i = 0; i < 4; i++) {
             if (actualCoordinates[i][1] >= 19 ||
-                    board.grid[actualCoordinates[i][0]][1+actualCoordinates[i][1]] != TileType.BLANK ) {
+                    board.grid[actualCoordinates[i][0]][1 + actualCoordinates[i][1]] != TileType.BLANK) {
                 return true;
             }
         }
         return false; //default, to be changed
     }
-
 
 
     public void fall() {
@@ -84,5 +86,34 @@ public class Tetromino {
     }
 
     //X key for clockwise rotation, Z for antiC
+    public void moveLeft() {
+            origin[0]--;
+            calculateActualCoordinates();
+    }
+
+    public boolean canMoveLeft(Board board) {
+        for (int i = 0; i < 4; i++) {
+            if (actualCoordinates[i][0] <= 0 ||
+                    board.grid[actualCoordinates[i][0]-1][actualCoordinates[i][1]] != TileType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void moveRight() {
+        origin[0]++; //need to check when at the edge
+        calculateActualCoordinates();
+    }
+
+    public boolean canMoveRight(Board board) {
+        for (int i = 0; i < 4; i++) {
+            if (actualCoordinates[i][0] >= 9 ||
+                    board.grid[actualCoordinates[i][0]+1][actualCoordinates[i][1]] != TileType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 

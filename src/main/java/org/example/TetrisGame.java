@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class TetrisGame extends JPanel implements ActionListener {
+public class TetrisGame extends JPanel implements KeyListener {
 
     final int boardWidth;
     final int boardHeight;
@@ -14,7 +16,6 @@ public class TetrisGame extends JPanel implements ActionListener {
 
     Board board;
     Tetromino tetromino;
-    Timer gameLoop;
 
 
     //constructor for TetrisGame
@@ -23,13 +24,32 @@ public class TetrisGame extends JPanel implements ActionListener {
         this.boardHeight = boardHeight;
         setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
         setBackground(Color.black);
+        addKeyListener(this);
+        setFocusable(true);
 
         tetromino = new Tetromino();
         tetromino.calculateActualCoordinates();
         board = new Board();
 
-        gameLoop = new Timer(500, this);
-        gameLoop.start();
+        new Thread(() -> {
+            while (true) {
+                try {
+
+                    tetromino.calculateActualCoordinates();
+                    if (tetromino.hasLanded(board)) {
+                        board.addFallenTetromino(tetromino);
+                        board.checkForFullLine();//not done yet
+                        tetromino = new Tetromino();
+                        tetromino.calculateActualCoordinates();
+                        //but real nes tetris has a time gap between last block landing and new one appearing?
+                    } else {
+                        tetromino.fall();
+                    }
+                    repaint();
+                    Thread.sleep(1000);
+                } catch ( InterruptedException e ) {}
+            }
+        }).start();
     }
 
     public void paintComponent(Graphics g) {
@@ -59,18 +79,29 @@ public class TetrisGame extends JPanel implements ActionListener {
         }
     }
 
+
+
     @Override
-    public void actionPerformed(ActionEvent e) {
-        tetromino.calculateActualCoordinates();
-        if (tetromino.hasLanded(board)) {
-            board.addFallenTetromino(tetromino);
-            board.checkForFullLine();//not done yet
-            tetromino = new Tetromino();
-            tetromino.calculateActualCoordinates();
-            //but real nes tetris has a time gap between last block landing and new one appearing?
-        } else {
-            tetromino.fall();
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (tetromino.canMoveLeft(board)) {
+                tetromino.moveLeft();
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if (tetromino.canMoveRight(board)) {
+                tetromino.moveRight();
+            }
         }
         repaint();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
