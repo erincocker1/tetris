@@ -60,6 +60,7 @@ public class Tetromino {
         tetrominoType = TetrominoType.O; //later make this random
         origin = new int[]{tetrominoType.getInitialXCoordinate(), 0};
         rotation = 0;
+        calculateActualCoordinates();
     }
 
     public boolean hasLanded(Board board) {
@@ -75,6 +76,7 @@ public class Tetromino {
 
     public void fall() {
         origin[1] += 1;
+        calculateActualCoordinates();
     }
 
     //actualCoordinates[i][j] is the jth coord of the ith square in the tetromino.

@@ -2,8 +2,6 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -34,13 +32,10 @@ public class TetrisGame extends JPanel implements KeyListener {
         new Thread(() -> {
             while (true) {
                 try {
-
-                    tetromino.calculateActualCoordinates();
                     if (tetromino.hasLanded(board)) {
                         board.addFallenTetromino(tetromino);
                         board.checkForFullLine();//not done yet
                         tetromino = new Tetromino();
-                        tetromino.calculateActualCoordinates();
                         //but real nes tetris has a time gap between last block landing and new one appearing?
                     } else {
                         tetromino.fall();
