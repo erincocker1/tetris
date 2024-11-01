@@ -9,13 +9,11 @@ public class Board {
                 grid[i][j] = TileType.BLANK;
             }
         }
-        grid[0][5] = TileType.O;
     }
 
     public void addFallenTetromino(Tetromino tetromino) {
         for (int i=0; i<4; i++) {
-            grid[tetromino.actualCoordinates[i][0]][tetromino.actualCoordinates[i][1]] = TileType.O;
-            //TO BE CHANGED, NEEDS TO BE TILETYPE OF TETROMINO
+            grid[tetromino.actualCoordinates[i][0]][tetromino.actualCoordinates[i][1]] = tetromino.tetrominoType.getTileType();
         }
     }
 

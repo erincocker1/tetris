@@ -1,33 +1,62 @@
 package org.example;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import static java.lang.Math.max;
+import java.util.*;
 
 //should have origin coordinates, and tile coordinates are relative to that.
 //should randomly create one tetromino when initialised
 enum TetrominoType {
-    //I(Color.white,3),
-    //L(Color.red,4),
-    //J(Color.blue,4),
-    //S(Color.magenta,4),
-    //Z(Color.yellow,4),
-    //T(Color.pink,4),
-    O(Color.cyan, 4, new HashMap<>(Map.of(
+    I(TileType.I,3, new HashMap<>(Map.of(
+            0, new int[][]{{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+            1, new int[][]{{2, 0}, {2, 1}, {2, 2}, {2, 3}},
+            2, new int[][]{{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+            3, new int[][]{{2, 0}, {2, 1}, {2, 2}, {2, 3}}
+    ))),
+    L(TileType.L,4, new HashMap<>(Map.of(
+            0, new int[][]{{0, 1}, {0, 2}, {1, 1}, {2, 1}},
+            1, new int[][]{{0, 0}, {1, 0}, {1, 1}, {1, 2}},
+            2, new int[][]{{0, 1}, {2, 0}, {1, 1}, {2, 1}},
+            3, new int[][]{{2, 2}, {1, 0}, {1, 1}, {1, 2}}
+    ))),
+    J(TileType.J,4, new HashMap<>(Map.of(
+            0, new int[][]{{0, 1}, {2, 2}, {1, 1}, {2, 1}},
+            1, new int[][]{{0, 2}, {1, 0}, {1, 1}, {1, 2}},
+            2, new int[][]{{0, 1}, {0, 0}, {1, 1}, {2, 1}},
+            3, new int[][]{{2, 0}, {1, 0}, {1, 1}, {1, 2}}
+    ))),
+    S(TileType.S,4, new HashMap<>(Map.of(
+            0, new int[][]{{0, 2}, {1, 2}, {1, 1}, {2, 1}},
+            1, new int[][]{{1, 0}, {1, 1}, {2, 1}, {2, 2}},
+            2, new int[][]{{0, 2}, {1, 2}, {1, 1}, {2, 1}},
+            3, new int[][]{{1, 0}, {1, 1}, {2, 1}, {2, 2}}
+    ))),
+    Z(TileType.Z,4, new HashMap<>(Map.of(
+            0, new int[][]{{0, 1}, {1, 1}, {1, 2}, {2, 2}},
+            1, new int[][]{{1, 2}, {1, 1}, {2, 1}, {2, 0}},
+            2, new int[][]{{0, 1}, {1, 1}, {1, 2}, {2, 2}},
+            3, new int[][]{{1, 2}, {1, 1}, {2, 1}, {2, 0}}
+    ))),
+    T(TileType.T,4, new HashMap<>(Map.of(
+            0, new int[][]{{0, 1}, {1, 1}, {2, 1}, {1, 2}},
+            1, new int[][]{{1, 0}, {1, 1}, {1, 2}, {0, 1}},
+            2, new int[][]{{0, 1}, {1, 1}, {2, 1}, {1, 0}},
+            3, new int[][]{{1, 0}, {1, 1}, {1, 2}, {2, 1}}
+    ))),
+    O(TileType.O, 4, new HashMap<>(Map.of(
             0, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             1, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             2, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}},
             3, new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}})));
 
-    private final Color color;
+    private final TileType tileType;
     private final int initialXCoordinate;
     private final HashMap<Integer, int[][]> coordsByRotation;
 
-    TetrominoType(Color color, int initialXCoordinate, HashMap<Integer, int[][]> relativeCoordinates) {
-        this.color = color;
+    private static final TetrominoType[] VALUES = TetrominoType.values();
+    private static final Random RANDOM = new Random();
+
+    TetrominoType(TileType tileType, int initialXCoordinate, HashMap<Integer, int[][]> relativeCoordinates) {
+        this.tileType = tileType;
         this.initialXCoordinate = initialXCoordinate;
         this.coordsByRotation = relativeCoordinates;
     }
@@ -41,9 +70,17 @@ enum TetrominoType {
     }
 
     public Color getColor() {
-        return color;
+        return tileType.getColor();
+    }
+
+    public TileType getTileType() { return tileType; }
+
+    public static TetrominoType getRandomTetromino() {
+        return VALUES[RANDOM.nextInt(7)];
     }
 }
+
+
 
 public class Tetromino {
     private int[] origin = new int[2];
@@ -56,8 +93,7 @@ public class Tetromino {
 
     //currently only O piece
     Tetromino() {
-        Random random = new Random();
-        tetrominoType = TetrominoType.O; //later make this random
+        tetrominoType = TetrominoType.getRandomTetromino(); //later make this random
         setOrigin(tetrominoType.getInitialXCoordinate(), 0);
     }
 
