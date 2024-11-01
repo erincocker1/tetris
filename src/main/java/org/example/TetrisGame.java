@@ -26,7 +26,6 @@ public class TetrisGame extends JPanel implements KeyListener {
         setFocusable(true);
 
         tetromino = new Tetromino();
-        tetromino.calculateActualCoordinates();
         board = new Board();
 
         new Thread(() -> {

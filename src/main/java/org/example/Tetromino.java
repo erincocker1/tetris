@@ -46,9 +46,9 @@ enum TetrominoType {
 }
 
 public class Tetromino {
-    int[] origin;
+    int[] origin = new int[2];
 
-    int rotation;
+    int rotation; //defaults to 0
 
     TetrominoType tetrominoType;
     public int[][] actualCoordinates = new int[4][2];
@@ -58,9 +58,7 @@ public class Tetromino {
     Tetromino() {
         Random random = new Random();
         tetrominoType = TetrominoType.O; //later make this random
-        origin = new int[]{tetrominoType.getInitialXCoordinate(), 0};
-        rotation = 0;
-        calculateActualCoordinates();
+        setOrigin(tetrominoType.getInitialXCoordinate(), 0);
     }
 
     public boolean hasLanded(Board board) {
@@ -75,12 +73,13 @@ public class Tetromino {
 
 
     public void fall() {
-        origin[1] += 1;
-        calculateActualCoordinates();
+        setOrigin(origin[0], origin[1]+1);
     }
 
-    //actualCoordinates[i][j] is the jth coord of the ith square in the tetromino.
-    public void calculateActualCoordinates() {
+    public void setOrigin(int x,int y) {
+        origin[0] = x;
+        origin[1] = y;
+        //actualCoordinates[i][j] is the jth coord of the ith square in the tetromino.
         for (int i = 0; i < 4; i++) {
             actualCoordinates[i][0] = origin[0] + tetrominoType.getCoordsByRotation().get(rotation)[i][0];
             actualCoordinates[i][1] = origin[1] + tetrominoType.getCoordsByRotation().get(rotation)[i][1];
@@ -89,8 +88,7 @@ public class Tetromino {
 
     //X key for clockwise rotation, Z for antiC
     public void moveLeft() {
-            origin[0]--;
-            calculateActualCoordinates();
+        setOrigin(origin[0]-1, origin[1]);
     }
 
     public boolean canMoveLeft(Board board) {
@@ -104,8 +102,7 @@ public class Tetromino {
     }
 
     public void moveRight() {
-        origin[0]++; //need to check when at the edge
-        calculateActualCoordinates();
+        setOrigin(origin[0]+1, origin[1]);
     }
 
     public boolean canMoveRight(Board board) {
