@@ -46,7 +46,7 @@ enum TetrominoType {
 }
 
 public class Tetromino {
-    int[] origin = new int[2];
+    private int[] origin = new int[2];
 
     int rotation; //defaults to 0
 
