@@ -114,5 +114,9 @@ public class Tetromino {
         }
         return true;
     }
+
+    public void moveDown() {
+        setOrigin(origin[0], origin[1] +1);
+    }
 }
 
