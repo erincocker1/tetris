@@ -12,6 +12,8 @@ public class TetrisGame extends JPanel implements KeyListener {
 
     final int T = 30;
 
+    final int SPEED = 500;
+
     Board board;
     Tetromino tetromino;
 
@@ -27,20 +29,27 @@ public class TetrisGame extends JPanel implements KeyListener {
 
         tetromino = new Tetromino();
         board = new Board();
+        repaint();
 
         new Thread(() -> {
+            try {
+                Thread.sleep(SPEED);
+            } catch (InterruptedException e) {}
+
             while (true) {
                 try {
+                    if (!tetromino.hasLanded(board)) {
+                        tetromino.fall();
+                    }
+                    Thread.sleep(SPEED/20); //to allow tucks+spins :)
                     if (tetromino.hasLanded(board)) {
                         board.addFallenTetromino(tetromino);
                         board.checkForFullLine();//not done yet
                         tetromino = new Tetromino();
                         //but real nes tetris has a time gap between last block landing and new one appearing?
-                    } else {
-                        tetromino.fall();
                     }
                     repaint();
-                    Thread.sleep(1000);
+                    Thread.sleep(SPEED);
                 } catch ( InterruptedException e ) {}
             }
         }).start();
