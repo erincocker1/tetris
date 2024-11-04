@@ -3,6 +3,8 @@ package org.example;
 import java.awt.*;
 import java.util.*;
 
+import static java.lang.Math.floorMod;
+
 //should have origin coordinates, and tile coordinates are relative to that.
 //should randomly create one tetromino when initialised
 enum TetrominoType {
@@ -85,7 +87,7 @@ enum TetrominoType {
 public class Tetromino {
     private int[] origin = new int[2];
 
-    int rotation; //defaults to 0
+    private int rotation; //defaults to 0
 
     TetrominoType tetrominoType;
     public int[][] actualCoordinates = new int[4][2];
@@ -115,12 +117,27 @@ public class Tetromino {
     public void setOrigin(int x,int y) {
         origin[0] = x;
         origin[1] = y;
+        updateActualCoordinates();
+    }
+
+    public void rotate(boolean isClockwise) {
+        if (isClockwise) {
+            rotation = floorMod((rotation + 1),4);
+        } else {
+            rotation = floorMod((rotation - 1),4);
+        }
+        updateActualCoordinates();
+    }
+
+
+    private void updateActualCoordinates() {
         //actualCoordinates[i][j] is the jth coord of the ith square in the tetromino.
         for (int i = 0; i < 4; i++) {
             actualCoordinates[i][0] = origin[0] + tetrominoType.getCoordsByRotation().get(rotation)[i][0];
             actualCoordinates[i][1] = origin[1] + tetrominoType.getCoordsByRotation().get(rotation)[i][1];
         }
     }
+
 
     //X key for clockwise rotation, Z for antiC
     public void moveLeft() {
@@ -153,6 +170,21 @@ public class Tetromino {
 
     public void moveDown() {
         setOrigin(origin[0], origin[1] +1);
+    }
+
+    public void rotateIncludingCheck(Board board, boolean isClockwise) {
+        rotate(isClockwise);
+        //if any overlap, reverse the rotation and return.
+        for (int i = 0; i < 4; i++) {
+            if (actualCoordinates[i][0] < 0 ||
+                    actualCoordinates[i][0] > 9 ||
+                    actualCoordinates[i][1] < 0 ||
+                    actualCoordinates[i][1] > 19 ||
+                    board.grid[actualCoordinates[i][0]][actualCoordinates[i][1]] != TileType.BLANK) {
+                rotate(!isClockwise);
+                return;
+            }
+        }
     }
 }
 

@@ -94,6 +94,10 @@ public class TetrisGame extends JPanel implements KeyListener {
             if (! tetromino.hasLanded(board)) {
                 tetromino.moveDown();
             }
+        } else if (e.getKeyCode() == KeyEvent.VK_Z) {
+            tetromino.rotateIncludingCheck(board, false);
+        } else if (e.getKeyCode() == KeyEvent.VK_X) {
+            tetromino.rotateIncludingCheck(board, true);
         }
         repaint();
     }
