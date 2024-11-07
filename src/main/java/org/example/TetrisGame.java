@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import static java.lang.Math.min;
+
 public class TetrisGame extends JPanel implements KeyListener {
 
     final int boardWidth;
@@ -12,7 +14,11 @@ public class TetrisGame extends JPanel implements KeyListener {
 
     final int T = 30;
 
-    final int SPEED = 500;
+    final int[] SPEED = {800, 717, 633, 550, 467, 383, 300, 217, 133, 100, 83, 83, 83,
+            67, 67, 67, 50, 50, 50, 50, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 17};
+
+    int totalLines = 0;
+    int level = 0;
 
     Board board;
     Tetromino tetromino;
@@ -33,7 +39,7 @@ public class TetrisGame extends JPanel implements KeyListener {
 
         new Thread(() -> {
             try {
-                Thread.sleep(SPEED);
+                Thread.sleep(SPEED[0]);
             } catch (InterruptedException e) {}
 
             while (true) {
@@ -41,15 +47,16 @@ public class TetrisGame extends JPanel implements KeyListener {
                     if (!tetromino.hasLanded(board)) {
                         tetromino.fall();
                     }
-                    Thread.sleep(SPEED/20); //to allow tucks+spins :)
+                    Thread.sleep(SPEED[level]/10); //to allow tucks+spins :)
                     if (tetromino.hasLanded(board)) {
                         board.addFallenTetromino(tetromino);
                         if (board.isGameOver()) { break; }
-                        board.checkForFullLine();
+                        totalLines = board.checkForFullLine(totalLines);
                         tetromino = new Tetromino();
                     }
                     repaint();
-                    Thread.sleep(SPEED);
+                    Thread.sleep(SPEED[level]);
+                    level = min(totalLines / 10, 29);
                 } catch ( InterruptedException e ) {}
             }
         }).start();

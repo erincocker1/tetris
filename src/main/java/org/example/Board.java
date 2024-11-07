@@ -17,7 +17,7 @@ public class Board {
         }
     }
 
-    public void checkForFullLine() {
+    public int checkForFullLine(int totalLines) {
         int fullLineCount = 0;
         boolean currentLineFull;
         for (int j=19; j>=0; j--) {
@@ -37,6 +37,7 @@ public class Board {
                 }
             }
         }
+        return totalLines + fullLineCount;
     }
 
     public boolean isGameOver() {
