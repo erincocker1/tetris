@@ -38,4 +38,13 @@ public class Board {
             }
         }
     }
+
+    public boolean isGameOver() {
+        for (int i = 0; i < 10; i++) {
+            if (grid[i][0] != TileType.BLANK) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
